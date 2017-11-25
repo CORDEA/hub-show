@@ -21,6 +21,7 @@ module Issue where
 import Data.Aeson
 import Data.Text
 import Data.ByteString.Lazy
+import qualified Milestone as M
 import qualified Data.Text.IO as T
 
 data Response = Response {
@@ -30,7 +31,8 @@ data Response = Response {
     body :: Text,
     user :: User,
     assignee :: Maybe User,
-    labels :: [Label]
+    labels :: [Label],
+    milestone :: M.Milestone
     } deriving Show
 
 data User = User {
@@ -50,6 +52,7 @@ instance FromJSON Response where
         <*> v .: "user"
         <*> v .: "assignee"
         <*> v .: "labels"
+        <*> v .: "milestone"
 
 instance FromJSON User where
     parseJSON (Object v) = User
