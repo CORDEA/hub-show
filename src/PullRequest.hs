@@ -51,3 +51,13 @@ instance FromJSON Response where
 parseJson :: ByteString -> Maybe [Response]
 parseJson json =
     decode json :: Maybe [Response]
+
+path :: String -> String -> String
+path "" "" =
+    error ""
+path "" _ =
+    error ""
+path _ "" =
+    error ""
+path owner repo =
+    "/repos/" ++ owner ++ "/" ++ repo ++ "/pulls"
