@@ -23,7 +23,6 @@ import Data.Text
 import Data.Monoid ((<>))
 import Data.ByteString.Lazy
 import qualified Milestone as M
-import qualified Label as L
 import qualified User as U
 import qualified Data.Text.IO as T
 
@@ -34,7 +33,6 @@ data Response = Response {
     body :: Text,
     user :: U.User,
     assignee :: Maybe U.User,
-    labels :: [L.Label],
     milestone :: Maybe M.Milestone
     } deriving Show
 
@@ -46,7 +44,6 @@ instance FromJSON Response where
         <*> v .: "body"
         <*> v .: "user"
         <*> v .: "assignee"
-        <*> v .: "labels"
         <*> v .: "milestone"
 
 parseJson :: ByteString -> Maybe [Response]
@@ -72,7 +69,4 @@ print (response : responses) = do
         milestoneTitle = case milestone response of
                            Just m -> M.toString m <> " "
                            Nothing -> ""
-        labelTitles = case L.toString $ labels response of
-                        Just s -> s <> " "
-                        Nothing -> ""
-        formattedTitle = milestoneTitle <> labelTitles <> title response
+        formattedTitle = milestoneTitle <> title response
