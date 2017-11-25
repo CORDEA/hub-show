@@ -28,6 +28,7 @@ import qualified Data.Text.IO as T
 import qualified Data.ByteString.Char8 as B
 import qualified Control.Exception as E
 import qualified Issue
+import qualified Option
 
 baseUrl :: String
 baseUrl = "https://api.github.com"
@@ -65,8 +66,14 @@ sendRequest req =
 
 main :: IO ()
 main = do
-    sendRequest ( gitHubRequest "" "/user/issues" "" ) >>= \response -> do
-        case Issue.parseJson $ responseBody response of
-            Nothing -> error ""
-            Just response -> return response
-        >>= Issue.print
+    execParser Option.parserInfo >>= \parser -> do
+        case parser of
+          Option.Args token ( Option.Issue issue ) ->
+              print issue
+              {- sendRequest ( gitHubRequest "" "/user/issues" "" ) >>= \response -> do -}
+                  {- case Issue.parseJson $ responseBody response of -}
+                      {- Nothing -> error "" -}
+                      {- Just response -> return response -}
+                  {- >>= Issue.print -}
+          Option.Args token ( Option.Pull pull ) ->
+              print pull
