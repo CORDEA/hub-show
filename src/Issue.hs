@@ -20,6 +20,7 @@ module Issue where
 
 import Data.Aeson
 import Data.Text
+import Data.Monoid ((<>))
 import Data.ByteString.Lazy
 import qualified Milestone as M
 import qualified Label as L
@@ -74,5 +75,11 @@ path _ owner repo =
 print :: [Response] -> IO ()
 print [] = return ()
 print (response : responses) = do
-    T.putStrLn $ title response
+    T.putStrLn $ formattedTitle
     Issue.print responses
+    where
+        milestoneTitle = case milestone response of
+                           Just m -> M.toString m <> " "
+                           Nothing -> ""
+        labelTitles = L.toString $ labels response
+        formattedTitle = milestoneTitle <> labelTitles <> title response
