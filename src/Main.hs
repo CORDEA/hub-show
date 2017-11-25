@@ -65,16 +65,26 @@ sendRequest :: Request -> IO ( Response ByteString )
 sendRequest req =
     withManager $ httpLbs req
 
+fetchIssues :: Option.CommonOpts -> Option.IssueOpts -> IO ()
+fetchIssues commonOpts opts =
+    sendRequest ( gitHubRequest token "" "" ) >>= \response -> do
+        case Issue.parseJson $ responseBody response of
+            Nothing -> error ""
+            Just response -> return response
+        >>= Issue.print
+    where
+        ( Option.CommonOpts token owner repo ) = commonOpts
+        ( Option.IssueOpts isOwn ) = opts
+
+fetchPullRequests :: Option.CommonOpts -> Option.PullOpts -> IO ()
+fetchPullRequests commonOpts opts =
+    return ()
+
 main :: IO ()
 main = do
     execParser Option.parserInfo >>= \parser -> do
         case parser of
-          Option.Args token ( Option.Issue issue ) ->
-              print issue
-              {- sendRequest ( gitHubRequest "" "/user/issues" "" ) >>= \response -> do -}
-                  {- case Issue.parseJson $ responseBody response of -}
-                      {- Nothing -> error "" -}
-                      {- Just response -> return response -}
-                  {- >>= Issue.print -}
-          Option.Args token ( Option.Pull pull ) ->
-              print pull
+          Option.Args opts ( Option.Issue issue ) ->
+              fetchIssues opts issue
+          Option.Args opts ( Option.Pull pull ) ->
+              fetchPullRequests opts pull
