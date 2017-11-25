@@ -67,5 +67,6 @@ path _ owner repo =
 
 print :: [Response] -> IO ()
 print [] = return ()
-print (response : responses) =
+print (response : responses) = do
     T.putStrLn $ title response
+    Issue.print responses
