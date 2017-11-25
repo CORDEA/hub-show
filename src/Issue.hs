@@ -29,11 +29,16 @@ data Response = Response {
     title :: Text,
     body :: Text,
     user :: User,
-    assignee :: Maybe User
+    assignee :: Maybe User,
+    labels :: [Label]
     } deriving Show
 
 data User = User {
     login :: Text
+    } deriving Show
+
+data Label = Label {
+    name :: Text
     } deriving Show
 
 instance FromJSON Response where
@@ -44,10 +49,15 @@ instance FromJSON Response where
         <*> v .: "body"
         <*> v .: "user"
         <*> v .: "assignee"
+        <*> v .: "labels"
 
 instance FromJSON User where
     parseJSON (Object v) = User
         <$> v .: "login"
+
+instance FromJSON Label where
+    parseJSON (Object v) = Label
+        <$> v .: "name"
 
 parseJson :: ByteString -> Maybe [Response]
 parseJson json =
