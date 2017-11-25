@@ -24,6 +24,7 @@ import Network.HTTP.Base ( defaultUserAgent )
 import Network.URI ( parseURI )
 import Data.ByteString.Lazy
 import Data.Maybe
+import Options.Applicative
 import qualified Data.Text.IO as T
 import qualified Data.ByteString.Char8 as B
 import qualified Control.Exception as E
