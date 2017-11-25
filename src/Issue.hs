@@ -24,6 +24,7 @@ import Data.Monoid ((<>))
 import Data.ByteString.Lazy
 import qualified Milestone as M
 import qualified Label as L
+import qualified User as U
 import qualified Data.Text.IO as T
 
 data Response = Response {
@@ -31,14 +32,10 @@ data Response = Response {
     state :: Text,
     title :: Text,
     body :: Text,
-    user :: User,
-    assignee :: Maybe User,
+    user :: U.User,
+    assignee :: Maybe U.User,
     labels :: [L.Label],
     milestone :: Maybe M.Milestone
-    } deriving Show
-
-data User = User {
-    login :: Text
     } deriving Show
 
 instance FromJSON Response where
@@ -51,10 +48,6 @@ instance FromJSON Response where
         <*> v .: "assignee"
         <*> v .: "labels"
         <*> v .: "milestone"
-
-instance FromJSON User where
-    parseJSON (Object v) = User
-        <$> v .: "login"
 
 parseJson :: ByteString -> Maybe [Response]
 parseJson json =
