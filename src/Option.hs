@@ -29,7 +29,9 @@ data Command
 
 data CommonOpts = CommonOpts
     {
-        token :: String
+        token :: String,
+        owner :: String,
+        repo :: String
     }
     deriving Show
 
@@ -49,6 +51,14 @@ commonOpts = CommonOpts
     <$> strOption
         ( long "token"
         <> help "" )
+    <*> strOption
+        ( long "owner"
+        <> help ""
+        <> value "" )
+    <*> strOption
+        ( long "repo"
+        <> help ""
+        <> value "" )
 
 pullParser :: Parser Command
 pullParser = Pull <$> pullOpts
