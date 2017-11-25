@@ -19,12 +19,22 @@
 module Label where
 
 import Data.Aeson
-import Data.Text
+import Data.Monoid ((<>))
+import qualified Data.Text as T
 
 data Label = Label {
-    name :: Text
+    name :: T.Text
     } deriving Show
 
 instance FromJSON Label where
     parseJSON (Object v) = Label
         <$> v .: "name"
+
+toString :: [Label] -> T.Text
+toString [] =
+    ""
+toString labels =
+    "[" <> concat <> "] "
+    where
+        texts = map ( \label -> name label ) labels
+        concat = T.intercalate "] [" texts
