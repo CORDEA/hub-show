@@ -30,11 +30,11 @@ instance FromJSON Label where
     parseJSON (Object v) = Label
         <$> v .: "name"
 
-toString :: [Label] -> T.Text
+toString :: [Label] -> Maybe T.Text
 toString [] =
-    ""
+    Nothing
 toString labels =
-    "[" <> concat <> "] "
+    Just $ "[" <> concat <> "]"
     where
         texts = map ( \label -> name label ) labels
         concat = T.intercalate "] [" texts

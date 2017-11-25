@@ -74,5 +74,7 @@ print (response : responses) = do
         milestoneTitle = case milestone response of
                            Just m -> M.toString m <> " "
                            Nothing -> ""
-        labelTitles = L.toString $ labels response
+        labelTitles = case L.toString $ labels response of
+                        Just s -> s <> " "
+                        Nothing -> ""
         formattedTitle = milestoneTitle <> labelTitles <> title response
