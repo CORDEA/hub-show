@@ -19,12 +19,17 @@
 module Milestone where
 
 import Data.Aeson
-import Data.Text
+import Data.Monoid ((<>))
+import qualified Data.Text as T
 
 data Milestone = Milestone {
-    title :: Text
+    title :: T.Text
     } deriving Show
 
 instance FromJSON Milestone where
     parseJSON (Object v) = Milestone
         <$> v .: "title"
+
+toString :: Milestone -> T.Text
+toString milestone =
+    "<" <> title milestone <> ">"
