@@ -29,7 +29,7 @@ data Response = Response {
     title :: Text,
     body :: Text,
     user :: User,
-    assignee :: User
+    assignee :: Maybe User
     } deriving Show
 
 data User = User {
