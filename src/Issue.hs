@@ -33,7 +33,7 @@ data Response = Response {
     user :: User,
     assignee :: Maybe User,
     labels :: [L.Label],
-    milestone :: M.Milestone
+    milestone :: Maybe M.Milestone
     } deriving Show
 
 data User = User {
