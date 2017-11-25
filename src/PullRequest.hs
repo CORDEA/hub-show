@@ -20,6 +20,7 @@ module PullRequest where
 
 import Data.Aeson
 import Data.Text
+import Data.Monoid ((<>))
 import Data.ByteString.Lazy
 import qualified Milestone as M
 import qualified Label as L
@@ -61,3 +62,15 @@ path _ "" =
     error ""
 path owner repo =
     "/repos/" ++ owner ++ "/" ++ repo ++ "/pulls"
+
+print :: [Response] -> IO ()
+print [] = return ()
+print (response : responses) = do
+    T.putStrLn $ formattedTitle
+    PullRequest.print responses
+    where
+        milestoneTitle = case milestone response of
+                           Just m -> M.toString m <> " "
+                           Nothing -> ""
+        labelTitles = L.toString $ labels response
+        formattedTitle = milestoneTitle <> labelTitles <> title response
