@@ -28,6 +28,7 @@ import Options.Applicative
 import qualified Data.Text.IO as T
 import qualified Data.ByteString.Char8 as B
 import qualified Control.Exception as E
+import qualified PullRequest
 import qualified Issue
 import qualified Option
 
@@ -79,7 +80,14 @@ fetchIssues commonOpts opts =
 
 fetchPullRequests :: Option.CommonOpts -> Option.PullOpts -> IO ()
 fetchPullRequests commonOpts opts =
-    return ()
+    sendRequest ( gitHubRequest token path "" ) >>= \response -> do
+        case PullRequest.parseJson $ responseBody response of
+          Nothing -> error ""
+          Just response -> return response
+    >>= PullRequest.print
+    where
+        ( Option.CommonOpts token owner repo ) = commonOpts
+        path = PullRequest.path owner repo
 
 main :: IO ()
 main = do
