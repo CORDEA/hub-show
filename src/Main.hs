@@ -67,7 +67,7 @@ sendRequest req =
 
 fetchIssues :: Option.CommonOpts -> Option.IssueOpts -> IO ()
 fetchIssues commonOpts opts =
-    sendRequest ( gitHubRequest token "" "" ) >>= \response -> do
+    sendRequest ( gitHubRequest token path "" ) >>= \response -> do
         case Issue.parseJson $ responseBody response of
             Nothing -> error ""
             Just response -> return response
@@ -75,6 +75,7 @@ fetchIssues commonOpts opts =
     where
         ( Option.CommonOpts token owner repo ) = commonOpts
         ( Option.IssueOpts isOwn ) = opts
+        path = Issue.path isOwn owner repo
 
 fetchPullRequests :: Option.CommonOpts -> Option.PullOpts -> IO ()
 fetchPullRequests commonOpts opts =

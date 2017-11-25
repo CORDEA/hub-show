@@ -53,6 +53,18 @@ parseJson :: ByteString -> Maybe [Response]
 parseJson json =
     decode json :: Maybe [Response]
 
+path :: Bool -> String -> String -> String
+path True _ _ =
+    "/user/issues"
+path _ "" "" =
+    "/issues"
+path _ "" _ =
+    error ""
+path _ _ "" =
+    error ""
+path _ owner repo =
+    "/repos/" ++ owner ++ "/" ++ repo ++ "/issues"
+
 print :: [Response] -> IO ()
 print [] = return ()
 print (response : responses) =
