@@ -22,6 +22,7 @@ import Data.Aeson
 import Data.Text
 import Data.ByteString.Lazy
 import qualified Milestone as M
+import qualified Label as L
 import qualified Data.Text.IO as T
 
 data Response = Response {
@@ -31,16 +32,12 @@ data Response = Response {
     body :: Text,
     user :: User,
     assignee :: Maybe User,
-    labels :: [Label],
+    labels :: [L.Label],
     milestone :: M.Milestone
     } deriving Show
 
 data User = User {
     login :: Text
-    } deriving Show
-
-data Label = Label {
-    name :: Text
     } deriving Show
 
 instance FromJSON Response where
@@ -57,10 +54,6 @@ instance FromJSON Response where
 instance FromJSON User where
     parseJSON (Object v) = User
         <$> v .: "login"
-
-instance FromJSON Label where
-    parseJSON (Object v) = Label
-        <$> v .: "name"
 
 parseJson :: ByteString -> Maybe [Response]
 parseJson json =
