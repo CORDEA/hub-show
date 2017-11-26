@@ -56,7 +56,7 @@ setHeaders req token =
 gitHubRequest :: String -> String -> String -> Request
 gitHubRequest token path param =
     case parseUrl url of
-        Nothing -> error ""
+        Nothing -> error "Illegal url."
         Just req ->
             setHeaders req { method = "GET" } token
     where
@@ -70,7 +70,7 @@ fetchIssues :: Option.CommonOpts -> Option.IssueOpts -> IO ()
 fetchIssues commonOpts opts =
     sendRequest ( gitHubRequest token path "" ) >>= \response -> do
         case Issue.parseJson $ responseBody response of
-            Nothing -> error ""
+            Nothing -> error "Failed to parse json."
             Just response -> return response
         >>= Issue.print
     where
@@ -82,7 +82,7 @@ fetchPullRequests :: Option.CommonOpts -> Option.PullOpts -> IO ()
 fetchPullRequests commonOpts opts =
     sendRequest ( gitHubRequest token path "" ) >>= \response -> do
         case PullRequest.parseJson $ responseBody response of
-          Nothing -> error ""
+          Nothing -> error "Failed to parse json."
           Just response -> return response
     >>= PullRequest.print
     where
