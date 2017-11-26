@@ -15,12 +15,14 @@
 -- date  : 2017-11-23
 
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 module Issue where
 
 import Data.Aeson
 import Data.Text
 import Data.Monoid ((<>))
+import Printer
 import qualified Data.ByteString.Lazy as B
 import qualified Milestone as M
 import qualified Label as L
@@ -79,17 +81,22 @@ path _ owner repo 0 =
 path _ owner repo number =
     "/repos/" ++ owner ++ "/" ++ repo ++ "/issues/" ++ show number
 
-print :: [Response] -> IO ()
-print [] = return ()
-print (response : responses) = do
-    T.putStrLn $ formattedTitle
-    Issue.print responses
-    where
-        milestoneTitle = case milestone response of
-                           Just m -> M.toString m <> " "
-                           Nothing -> ""
-        labelTitles = case L.toString $ labels response of
-                        Just s -> s <> " "
-                        Nothing -> ""
-        commentsTitle = pack $ " [" <> show ( comments response ) <> "] "
-        formattedTitle = milestoneTitle <> labelTitles <> ( title response ) <> commentsTitle
+instance Print [Response] where
+    print [] = return ()
+    print (response : responses) = do
+        T.putStrLn $ formattedTitle
+        Printer.print responses
+        where
+            milestoneTitle = case milestone response of
+                            Just m -> M.toString m <> " "
+                            Nothing -> ""
+            labelTitles = case L.toString $ labels response of
+                            Just s -> s <> " "
+                            Nothing -> ""
+            commentsTitle = pack $ " [" <> show ( comments response ) <> "] "
+            formattedTitle = milestoneTitle <> labelTitles <> ( title response ) <> commentsTitle
+
+instance Print Response where
+    print response = do
+        -- TODO
+        T.putStrLn ""
