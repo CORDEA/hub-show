@@ -50,14 +50,14 @@ commonOpts :: Parser CommonOpts
 commonOpts = CommonOpts
     <$> strOption
         ( long "token"
-        <> help "" )
+        <> help "GitHub access token." )
     <*> strOption
         ( long "owner"
-        <> help ""
+        <> help "Repository owner name."
         <> value "" )
     <*> strOption
         ( long "repo"
-        <> help ""
+        <> help "Repository name."
         <> value "" )
 
 pullParser :: Parser Command
@@ -73,7 +73,7 @@ issueOpts :: Parser IssueOpts
 issueOpts = IssueOpts
     <$> switch
         ( long "own"
-        <> help "" )
+        <> help "Show own issues." )
 
 parser :: Parser Args
 parser = Args
