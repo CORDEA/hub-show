@@ -21,7 +21,7 @@ module Issue where
 import Data.Aeson
 import Data.Text
 import Data.Monoid ((<>))
-import Data.ByteString.Lazy
+import qualified Data.ByteString.Lazy as B
 import qualified Milestone as M
 import qualified Label as L
 import qualified User as U
@@ -35,7 +35,8 @@ data Response = Response {
     user :: U.User,
     assignee :: Maybe U.User,
     labels :: [L.Label],
-    milestone :: Maybe M.Milestone
+    milestone :: Maybe M.Milestone,
+    comments :: Int
     } deriving Show
 
 instance FromJSON Response where
@@ -48,8 +49,9 @@ instance FromJSON Response where
         <*> v .: "assignee"
         <*> v .: "labels"
         <*> v .: "milestone"
+        <*> v .: "comments"
 
-parseJson :: ByteString -> Maybe [Response]
+parseJson :: B.ByteString -> Maybe [Response]
 parseJson json =
     decode json :: Maybe [Response]
 
@@ -77,4 +79,5 @@ print (response : responses) = do
         labelTitles = case L.toString $ labels response of
                         Just s -> s <> " "
                         Nothing -> ""
-        formattedTitle = milestoneTitle <> labelTitles <> title response
+        commentsTitle = pack $ " [" <> show ( comments response ) <> "] "
+        formattedTitle = milestoneTitle <> labelTitles <> ( title response ) <> commentsTitle
