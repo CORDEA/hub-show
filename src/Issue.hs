@@ -53,10 +53,6 @@ instance FromJSON Response where
         <*> v .: "milestone"
         <*> v .: "comments"
 
-parseJson :: B.ByteString -> Maybe [Response]
-parseJson json =
-    decode json :: Maybe [Response]
-
 isSingle :: Int -> Bool
 isSingle 0 =
     False
@@ -80,6 +76,16 @@ path _ owner repo 0 =
     "/repos/" ++ owner ++ "/" ++ repo ++ "/issues"
 path _ owner repo number =
     "/repos/" ++ owner ++ "/" ++ repo ++ "/issues/" ++ show number
+
+handleResponse :: B.ByteString -> Bool -> IO ()
+handleResponse json True =
+    case decode json :: Maybe Response of
+      Nothing -> error "Failed to parse json."
+      Just d -> Printer.print d
+handleResponse json _ =
+    case decode json :: Maybe [Response] of
+      Nothing -> error "Failed to parse json."
+      Just d -> Printer.print d
 
 instance Print [Response] where
     print [] = return ()
