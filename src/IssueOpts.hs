@@ -23,6 +23,7 @@ data IssueOpts = IssueOpts
     {
         owner :: String,
         repo :: String,
+        number :: Int,
         isUser :: Bool
     }
     deriving Show
@@ -37,6 +38,10 @@ issueOpts = IssueOpts
         ( long "repo"
         <> help "Repository name."
         <> value "" )
+    <*> option auto
+        ( long "number"
+        <> help "Issue number."
+        <> value 0 )
     <*> switch
         ( long "own"
         <> help "Show own issues." )
