@@ -61,9 +61,9 @@ path True _ _ =
 path _ "" "" =
     "/issues"
 path _ "" _ =
-    error ""
+    error "Please pass the owner name."
 path _ _ "" =
-    error ""
+    error "Please pass the repository name."
 path _ owner repo =
     "/repos/" ++ owner ++ "/" ++ repo ++ "/issues"
 

@@ -52,11 +52,11 @@ parseJson json =
 
 path :: String -> String -> String
 path "" "" =
-    error ""
+    error "Please pass the owner and repository name."
 path "" _ =
-    error ""
+    error "Please pass the owner name."
 path _ "" =
-    error ""
+    error "Please pass the repository name."
 path owner repo =
     "/repos/" ++ owner ++ "/" ++ repo ++ "/pulls"
 
