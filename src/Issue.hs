@@ -55,17 +55,29 @@ parseJson :: B.ByteString -> Maybe [Response]
 parseJson json =
     decode json :: Maybe [Response]
 
-path :: Bool -> String -> String -> String
-path True _ _ =
+isSingle :: Int -> Bool
+isSingle 0 =
+    False
+isSingle _ =
+    True
+
+path :: Bool -> String -> String -> Int -> String
+path True "" "" 0 =
     "/user/issues"
-path _ "" "" =
+path True _ _ _ =
+    error "An option that can not be specify together is specified."
+path _ "" "" 0 =
     "/issues"
-path _ "" _ =
+path _ "" "" _ =
+    error "An option that can not be specify together is specified."
+path _ "" _ _ =
     error "Please pass the owner name."
-path _ _ "" =
+path _ _ "" _ =
     error "Please pass the repository name."
-path _ owner repo =
+path _ owner repo 0 =
     "/repos/" ++ owner ++ "/" ++ repo ++ "/issues"
+path _ owner repo number =
+    "/repos/" ++ owner ++ "/" ++ repo ++ "/issues/" ++ show number
 
 print :: [Response] -> IO ()
 print [] = return ()
