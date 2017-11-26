@@ -18,6 +18,8 @@ module Option where
 
 import Options.Applicative
 import Data.Monoid
+import PullOpts
+import IssueOpts
 
 data Args = Args CommonOpts Command
     deriving Show
@@ -29,20 +31,7 @@ data Command
 
 data CommonOpts = CommonOpts
     {
-        token :: String,
-        owner :: String,
-        repo :: String
-    }
-    deriving Show
-
-data PullOpts = PullOpts
-    {
-    }
-    deriving Show
-
-data IssueOpts = IssueOpts
-    {
-        isUser :: Bool
+        token :: String
     }
     deriving Show
 
@@ -51,29 +40,12 @@ commonOpts = CommonOpts
     <$> strOption
         ( long "token"
         <> help "GitHub access token." )
-    <*> strOption
-        ( long "owner"
-        <> help "Repository owner name."
-        <> value "" )
-    <*> strOption
-        ( long "repo"
-        <> help "Repository name."
-        <> value "" )
 
 pullParser :: Parser Command
 pullParser = Pull <$> pullOpts
 
-pullOpts :: Parser PullOpts
-pullOpts = pure PullOpts
-
 issueParser :: Parser Command
 issueParser = Issue <$> issueOpts
-
-issueOpts :: Parser IssueOpts
-issueOpts = IssueOpts
-    <$> switch
-        ( long "own"
-        <> help "Show own issues." )
 
 parser :: Parser Args
 parser = Args

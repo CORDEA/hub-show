@@ -51,12 +51,6 @@ parseJson json =
     decode json :: Maybe [Response]
 
 path :: String -> String -> String
-path "" "" =
-    error "Please pass the owner and repository name."
-path "" _ =
-    error "Please pass the owner name."
-path _ "" =
-    error "Please pass the repository name."
 path owner repo =
     "/repos/" ++ owner ++ "/" ++ repo ++ "/pulls"
 

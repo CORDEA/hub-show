@@ -25,6 +25,8 @@ import Network.URI ( parseURI )
 import Data.ByteString.Lazy
 import Data.Maybe
 import Options.Applicative
+import IssueOpts
+import PullOpts
 import qualified Data.Text.IO as T
 import qualified Data.ByteString.Char8 as B
 import qualified Control.Exception as E
@@ -66,7 +68,7 @@ sendRequest :: Request -> IO ( Response ByteString )
 sendRequest req =
     withManager $ httpLbs req
 
-fetchIssues :: Option.CommonOpts -> Option.IssueOpts -> IO ()
+fetchIssues :: Option.CommonOpts -> IssueOpts -> IO ()
 fetchIssues commonOpts opts =
     sendRequest ( gitHubRequest token path "" ) >>= \response -> do
         case Issue.parseJson $ responseBody response of
@@ -74,11 +76,11 @@ fetchIssues commonOpts opts =
             Just response -> return response
         >>= Issue.print
     where
-        ( Option.CommonOpts token owner repo ) = commonOpts
-        ( Option.IssueOpts isOwn ) = opts
+        ( Option.CommonOpts token ) = commonOpts
+        ( IssueOpts owner repo isOwn ) = opts
         path = Issue.path isOwn owner repo
 
-fetchPullRequests :: Option.CommonOpts -> Option.PullOpts -> IO ()
+fetchPullRequests :: Option.CommonOpts -> PullOpts -> IO ()
 fetchPullRequests commonOpts opts =
     sendRequest ( gitHubRequest token path "" ) >>= \response -> do
         case PullRequest.parseJson $ responseBody response of
@@ -86,7 +88,8 @@ fetchPullRequests commonOpts opts =
           Just response -> return response
     >>= PullRequest.print
     where
-        ( Option.CommonOpts token owner repo ) = commonOpts
+        ( Option.CommonOpts token ) = commonOpts
+        ( PullOpts owner repo ) = opts
         path = PullRequest.path owner repo
 
 main :: IO ()
