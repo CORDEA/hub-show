@@ -38,7 +38,7 @@ baseUrl :: String
 baseUrl = "https://api.github.com"
 
 buildUrl :: String -> String -> String -> String
-buildUrl token path "" =
+buildUrl _ path "" =
     baseUrl ++ path
 buildUrl token path param =
     baseUrl ++ path ++ "?" ++ param
@@ -65,8 +65,8 @@ gitHubRequest token path param =
         url = buildUrl token path param
 
 sendRequest :: Request -> IO ( Response ByteString )
-sendRequest req =
-    withManager $ httpLbs req
+sendRequest =
+    withManager . httpLbs
 
 fetchIssues :: Option.CommonOpts -> IssueOpts -> IO ()
 fetchIssues commonOpts opts =
