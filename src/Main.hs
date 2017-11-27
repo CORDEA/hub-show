@@ -47,7 +47,7 @@ setHeaders :: Request -> String -> Request
 setHeaders req token =
     req {
         requestHeaders =
-            ( hAccept, B.pack "application/vnd.github.full+json" ) :
+            ( hAccept, B.pack "application/vnd.github.raw+json" ) :
             ( hAuthorization, B.pack tokenHeader ) :
             ( hUserAgent, B.pack defaultUserAgent ) :
             requestHeaders req
