@@ -22,7 +22,8 @@ import Data.Monoid ((<>))
 data PullOpts = PullOpts
     {
         owner :: String,
-        repo :: String
+        repo :: String,
+        number :: Int
     }
     deriving Show
 
@@ -34,3 +35,7 @@ pullOpts = PullOpts
     <*> strOption
         ( long "repo"
         <> help "Repository name." )
+    <*> option auto
+        ( long "number"
+        <> help "Issue number."
+        <> value 0 )
