@@ -37,5 +37,5 @@ pullOpts = PullOpts
         <> help "Repository name." )
     <*> option auto
         ( long "number"
-        <> help "Issue number."
+        <> help "Pull request number."
         <> value 0 )
