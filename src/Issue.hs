@@ -87,22 +87,26 @@ handleResponse json _ =
       Nothing -> error "Failed to parse json."
       Just d -> Printer.print d
 
+formattedTitle :: Response -> Text
+formattedTitle response =
+    milestoneTitle <> labelTitles <> ( title response ) <> commentsTitle
+    where
+        milestoneTitle = case milestone response of
+                        Just m -> M.toString m <> " "
+                        Nothing -> ""
+        labelTitles = case L.toString $ labels response of
+                        Just s -> s <> " "
+                        Nothing -> ""
+        commentsTitle = pack $ " [" <> show ( comments response ) <> "] "
+
+
 instance Print [Response] where
     print [] = return ()
     print (response : responses) = do
-        T.putStrLn $ formattedTitle
+        T.putStrLn $ formattedTitle response
         Printer.print responses
-        where
-            milestoneTitle = case milestone response of
-                            Just m -> M.toString m <> " "
-                            Nothing -> ""
-            labelTitles = case L.toString $ labels response of
-                            Just s -> s <> " "
-                            Nothing -> ""
-            commentsTitle = pack $ " [" <> show ( comments response ) <> "] "
-            formattedTitle = milestoneTitle <> labelTitles <> ( title response ) <> commentsTitle
 
 instance Print Response where
     print response = do
-        -- TODO
-        T.putStrLn ""
+        T.putStrLn $ formattedTitle response <> "\n"
+        T.putStrLn $ body response
