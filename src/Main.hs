@@ -68,15 +68,20 @@ sendRequest :: Request -> IO ( Response ByteString )
 sendRequest =
     withManager . httpLbs
 
+isSingle :: Int -> Bool
+isSingle 0 =
+    False
+isSingle _ =
+    True
+
 fetchIssues :: Option.CommonOpts -> IssueOpts -> IO ()
 fetchIssues commonOpts opts =
-    sendRequest ( gitHubRequest token path "" ) >>= \response -> do
-        flip Issue.handleResponse isSingle $ responseBody response
+    sendRequest ( gitHubRequest token path "" ) >>= \response ->
+        Issue.handleResponse ( responseBody response ) $ isSingle number
     where
         ( Option.CommonOpts token ) = commonOpts
         ( IssueOpts owner repo number isOwn ) = opts
         path = Issue.path isOwn owner repo number
-        isSingle = Issue.isSingle number
 
 fetchPullRequests :: Option.CommonOpts -> PullOpts -> IO ()
 fetchPullRequests commonOpts opts =

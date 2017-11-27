@@ -53,12 +53,6 @@ instance FromJSON Response where
         <*> v .: "milestone"
         <*> v .: "comments"
 
-isSingle :: Int -> Bool
-isSingle 0 =
-    False
-isSingle _ =
-    True
-
 path :: Bool -> String -> String -> Int -> String
 path True "" "" 0 =
     "/user/issues"
