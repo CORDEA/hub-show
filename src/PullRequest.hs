@@ -15,13 +15,15 @@
 -- date  : 2017-11-25
 
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 module PullRequest where
 
 import Data.Aeson
 import Data.Text
 import Data.Monoid ((<>))
-import Data.ByteString.Lazy
+import Printer
+import qualified Data.ByteString.Lazy as B
 import qualified Milestone as M
 import qualified User as U
 import qualified Data.Text.IO as T
@@ -46,21 +48,42 @@ instance FromJSON Response where
         <*> v .: "assignee"
         <*> v .: "milestone"
 
-parseJson :: ByteString -> Maybe [Response]
+parseJson :: B.ByteString -> Maybe [Response]
 parseJson json =
     decode json :: Maybe [Response]
 
-path :: String -> String -> String
-path owner repo =
+path :: String -> String -> Int -> String
+path owner repo 0 =
     "/repos/" ++ owner ++ "/" ++ repo ++ "/pulls"
+path owner repo number =
+    "/repos/" ++ owner ++ "/" ++ repo ++ "/pulls/" ++ show number
 
-print :: [Response] -> IO ()
-print [] = return ()
-print (response : responses) = do
-    T.putStrLn $ formattedTitle
-    PullRequest.print responses
+handleResponse :: B.ByteString -> Bool -> IO ()
+handleResponse json True =
+    case decode json :: Maybe Response of
+      Nothing -> error "Failed to parse json."
+      Just d -> Printer.print d
+handleResponse json _ =
+    case decode json :: Maybe [Response] of
+      Nothing -> error "Failed to parse json."
+      Just d -> Printer.print d
+
+formattedTitle :: Response -> Text
+formattedTitle response =
+    milestoneTitle <> title response
     where
         milestoneTitle = case milestone response of
                            Just m -> M.toString m <> " "
                            Nothing -> ""
-        formattedTitle = milestoneTitle <> title response
+
+
+instance Print [Response] where
+    print [] = return ()
+    print (response : responses) = do
+        T.putStrLn $ formattedTitle response
+        Printer.print responses
+
+instance Print Response where
+    print response = do
+        T.putStrLn $ formattedTitle response <> "\n"
+        T.putStrLn $ body response

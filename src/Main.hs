@@ -85,15 +85,12 @@ fetchIssues commonOpts opts =
 
 fetchPullRequests :: Option.CommonOpts -> PullOpts -> IO ()
 fetchPullRequests commonOpts opts =
-    sendRequest ( gitHubRequest token path "" ) >>= \response -> do
-        case PullRequest.parseJson $ responseBody response of
-          Nothing -> error "Failed to parse json."
-          Just response -> return response
-    >>= PullRequest.print
+    sendRequest ( gitHubRequest token path "" ) >>= \response ->
+        PullRequest.handleResponse ( responseBody response ) $ isSingle number
     where
         ( Option.CommonOpts token ) = commonOpts
-        ( PullOpts owner repo ) = opts
-        path = PullRequest.path owner repo
+        ( PullOpts owner repo number ) = opts
+        path = PullRequest.path owner repo number
 
 main :: IO ()
 main = do
