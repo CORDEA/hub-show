@@ -35,7 +35,12 @@ data Response = Response {
     body :: Text,
     user :: U.User,
     assignee :: Maybe U.User,
-    milestone :: Maybe M.Milestone
+    milestone :: Maybe M.Milestone,
+    comments :: Maybe Int,
+    commits :: Maybe Int,
+    additions :: Maybe Int,
+    deletions :: Maybe Int,
+    changedFiles :: Maybe Int
     } deriving Show
 
 instance FromJSON Response where
@@ -47,6 +52,11 @@ instance FromJSON Response where
         <*> v .: "user"
         <*> v .: "assignee"
         <*> v .: "milestone"
+        <*> v .: "comments"
+        <*> v .: "commits"
+        <*> v .: "additions"
+        <*> v .: "deletions"
+        <*> v .: "changed_files"
 
 parseJson :: B.ByteString -> Maybe [Response]
 parseJson json =
