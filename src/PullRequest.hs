@@ -21,6 +21,7 @@ module PullRequest where
 
 import Data.Aeson
 import Data.Text
+import Data.Maybe
 import Data.Monoid ((<>))
 import Printer
 import qualified Data.ByteString.Lazy as B
@@ -95,5 +96,15 @@ instance Print [Response] where
 
 instance Print Response where
     print response = do
-        T.putStrLn $ formattedTitle response <> "\n"
+        T.putStrLn $ formattedTitle response
+        T.putStrLn $ pack changes <> "\n"
         T.putStrLn $ body response
+        where
+            commitsText = show $ fromJust $ commits response
+            additionsText = show $ fromJust $ additions response
+            deletionsText = show $ fromJust $ deletions response
+            changedFilesText = show $ fromJust $ changedFiles response
+            changes = commitsText <> " commits, "
+                <> changedFilesText <> " file changed, "
+                <> additionsText <> " additions, "
+                <> deletionsText <> " deletions."
